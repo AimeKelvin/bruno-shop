@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,27 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom e-commerce colors
+				sand: {
+					light: '#F5F5F0',
+					DEFAULT: '#E8E6DC',
+					dark: '#D3D0C5'
+				},
+				olive: {
+					light: '#DADEC0',
+					DEFAULT: '#A0A984',
+					dark: '#5A5E48'
+				},
+				charcoal: {
+					light: '#404040',
+					DEFAULT: '#333333',
+					dark: '#1A1A1A'
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				serif: ['Playfair Display', 'serif']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +105,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out forwards'
 			}
 		}
 	},
