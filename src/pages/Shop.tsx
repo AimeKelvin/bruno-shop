@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import ProductGrid from '../components/shop/ProductGrid';
+import ProductFilter from '../components/shop/ProductFilter';
 import { Product } from '../components/ui/ProductCard';
-import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
+import { Filter, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { useIsMobile } from '../hooks/use-mobile';
 
 // Mock product data
 const allProducts: Product[] = [
@@ -85,17 +87,57 @@ const allProducts: Product[] = [
 // Get unique categories
 const categories = ['All', ...new Set(allProducts.map(p => p.category))];
 
+// Get max price
+const maxPrice = Math.max(...allProducts.map(p => p.price));
+
 const Shop = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('featured');
+  const isMobile = useIsMobile();
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('featured');
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
   
-  // Filter and sort products
-  const filteredProducts = allProducts.filter(product => 
-    selectedCategory === 'All' || product.category === selectedCategory
-  );
+  // Update active filters when filters change
+  useEffect(() => {
+    const newActiveFilters: string[] = [];
+    
+    if (selectedCategory !== 'All') {
+      newActiveFilters.push(`Category: ${selectedCategory}`);
+    }
+    
+    if (priceRange[0] > 0 || priceRange[1] < maxPrice) {
+      newActiveFilters.push(`Price: $${priceRange[0]} - $${priceRange[1]}`);
+    }
+    
+    if (searchTerm) {
+      newActiveFilters.push(`Search: ${searchTerm}`);
+    }
+    
+    setActiveFilters(newActiveFilters);
+  }, [selectedCategory, priceRange, searchTerm, maxPrice]);
   
-  let sortedProducts = [...filteredProducts];
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSelectedCategory('All');
+    setPriceRange([0, maxPrice]);
+    setSearchTerm('');
+  };
+  
+  // Remove specific filter
+  const removeFilter = (filter: string) => {
+    if (filter.startsWith('Category:')) {
+      setSelectedCategory('All');
+    } else if (filter.startsWith('Price:')) {
+      setPriceRange([0, maxPrice]);
+    } else if (filter.startsWith('Search:')) {
+      setSearchTerm('');
+    }
+  };
+  
+  // Sort products
+  let sortedProducts = [...allProducts];
   if (sortBy === 'price-low') {
     sortedProducts.sort((a, b) => a.price - b.price);
   } else if (sortBy === 'price-high') {
@@ -127,76 +169,58 @@ const Shop = () => {
               <div className="flex items-center space-x-2">
                 <Filter size={18} />
                 <span>Filter & Sort</span>
+                {activeFilters.length > 0 && (
+                  <span className="bg-charcoal text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {activeFilters.length}
+                  </span>
+                )}
               </div>
               {isMobileFiltersOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </button>
           </div>
           
+          {/* Active Filters */}
+          {activeFilters.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              <span className="text-charcoal-light">Active Filters:</span>
+              {activeFilters.map((filter, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center bg-secondary px-3 py-1 text-sm"
+                >
+                  <span>{filter}</span>
+                  <button 
+                    onClick={() => removeFilter(filter)}
+                    className="ml-2 text-charcoal-light hover:text-charcoal"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+              <button 
+                onClick={clearAllFilters}
+                className="text-charcoal-light hover:text-charcoal text-sm underline ml-2"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
+          
           <div className="flex flex-col md:flex-row gap-8">
             {/* Sidebar Filters */}
             <aside className={`md:w-64 ${isMobileFiltersOpen ? 'block' : 'hidden'} md:block`}>
-              {/* Categories */}
-              <div className="mb-8">
-                <h3 className="font-medium mb-3">Categories</h3>
-                <ul className="space-y-2">
-                  {categories.map((category) => (
-                    <li key={category}>
-                      <button
-                        className={`text-left w-full ${selectedCategory === category ? 'text-charcoal font-medium' : 'text-charcoal-light'}`}
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              {/* Price Range */}
-              <div className="mb-8">
-                <h3 className="font-medium mb-3">Price</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <button 
-                      className={`text-left w-full ${sortBy === 'price-low' ? 'text-charcoal font-medium' : 'text-charcoal-light'}`}
-                      onClick={() => setSortBy('price-low')}
-                    >
-                      Price: Low to High
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      className={`text-left w-full ${sortBy === 'price-high' ? 'text-charcoal font-medium' : 'text-charcoal-light'}`}
-                      onClick={() => setSortBy('price-high')}
-                    >
-                      Price: High to Low
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              
-              {/* Sort Options for Mobile */}
-              <div className="mb-8 md:hidden">
-                <h3 className="font-medium mb-3">Sort By</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <button 
-                      className={`text-left w-full ${sortBy === 'featured' ? 'text-charcoal font-medium' : 'text-charcoal-light'}`}
-                      onClick={() => setSortBy('featured')}
-                    >
-                      Featured
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      className={`text-left w-full ${sortBy === 'name' ? 'text-charcoal font-medium' : 'text-charcoal-light'}`}
-                      onClick={() => setSortBy('name')}
-                    >
-                      Name: A to Z
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              <ProductFilter 
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                priceRange={priceRange}
+                maxPrice={maxPrice}
+                onPriceRangeChange={setPriceRange}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+              />
             </aside>
             
             {/* Products Section */}
@@ -221,20 +245,12 @@ const Shop = () => {
               </div>
               
               {/* Products */}
-              <ProductGrid products={sortedProducts} />
-              
-              {/* Empty State */}
-              {sortedProducts.length === 0 && (
-                <div className="py-12 text-center">
-                  <p className="text-lg mb-4">No products found.</p>
-                  <button 
-                    onClick={() => setSelectedCategory('All')}
-                    className="btn-outline"
-                  >
-                    View All Products
-                  </button>
-                </div>
-              )}
+              <ProductGrid 
+                products={sortedProducts}
+                category={selectedCategory !== 'All' ? selectedCategory : undefined}
+                priceRange={priceRange[0] > 0 || priceRange[1] < maxPrice ? priceRange : null}
+                searchTerm={searchTerm}
+              />
             </div>
           </div>
         </div>

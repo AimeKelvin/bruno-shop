@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { X, ShoppingBag, Trash2 } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
+import { Link } from 'react-router-dom';
 
 interface CartWidgetProps {
   isOpen: boolean;
@@ -8,25 +10,9 @@ interface CartWidgetProps {
 }
 
 const CartWidget: React.FC<CartWidgetProps> = ({ isOpen, onClose }) => {
-  // Sample cart items
-  const cartItems = [
-    {
-      id: 1,
-      name: "Minimalist Vase",
-      price: 89.99,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-    },
-    {
-      id: 2,
-      name: "Ceramic Mug",
-      price: 29.99,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-    }
-  ];
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
   
-  const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const subtotal = getTotalPrice();
   
   return (
     <>
@@ -84,10 +70,25 @@ const CartWidget: React.FC<CartWidgetProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-charcoal-light text-sm">Quantity: {item.quantity}</p>
+                      <div className="flex items-center mt-1">
+                        <button 
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-border"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center">{item.quantity}</span>
+                        <button 
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-border"
+                        >
+                          +
+                        </button>
+                      </div>
                       <div className="flex items-center justify-between mt-2">
                         <p className="font-medium">${item.price.toFixed(2)}</p>
                         <button 
+                          onClick={() => removeFromCart(item.id)}
                           className="text-charcoal-light hover:text-charcoal transition-colors"
                           aria-label={`Remove ${item.name} from cart`}
                         >
@@ -110,12 +111,13 @@ const CartWidget: React.FC<CartWidgetProps> = ({ isOpen, onClose }) => {
             <p className="text-charcoal-light text-sm mb-4">
               Shipping and taxes calculated at checkout
             </p>
-            <button 
-              className="btn-primary w-full mb-2"
-              disabled={cartItems.length === 0}
+            <Link 
+              to="/cart"
+              className="btn-primary w-full mb-2 block text-center"
+              onClick={onClose}
             >
-              Checkout
-            </button>
+              View Cart
+            </Link>
             <button 
               onClick={onClose}
               className="btn-outline w-full"
