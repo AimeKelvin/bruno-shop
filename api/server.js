@@ -7,6 +7,9 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const cors = require('cors');
+const cartRoutes = require('./routes/cartRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+
 
 // Config
 dotenv.config();
@@ -21,7 +24,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-
+app.use('/api/cart', cartRoutes);
+app.use('/api/payment', paymentRoutes);
 // Error Handler
 app.use(errorHandler);
 
