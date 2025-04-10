@@ -2,7 +2,7 @@
 import React from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Separator } from "@/components/ui/separator";
-import Button from "@/components/ui/Button";
+import {Button} from "@/components/ui/Button";
 
 const About: React.FC = () => {
   return (

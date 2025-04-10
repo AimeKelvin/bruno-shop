@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { products, categories } from "@/data/products";
 import { Edit, Trash2, Plus, Package, Users, ShoppingBag, FileText, Settings, BarChart3 } from "lucide-react";
 

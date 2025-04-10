@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { products } from "@/data/products";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useCart } from "@/hooks/useCart";
 import { Minus, Plus, Heart, Share2, ChevronLeft, Star, ShoppingBag, Truck, RefreshCw, Shield } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";

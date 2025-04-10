@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "@/hooks/useCart";
 import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
-import Button from "../ui/Button";
+import {Button} from "../ui/Button";
 import { cn } from "@/lib/utils";
 
 const Navbar: React.FC = () => {

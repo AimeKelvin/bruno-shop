@@ -6,7 +6,7 @@ import FeaturedProducts from "@/components/ui/FeaturedProducts";
 import Categories from "@/components/ui/Categories";
 import Newsletter from "@/components/ui/Newsletter";
 import CartSidebar from "@/components/ui/CartSidebar";
-import Button from "@/components/ui/Button";
+import {Button} from "@/components/ui/Button";
 import { CartProvider } from "@/context/CartContext";
 import { ChevronRight } from "lucide-react";
 

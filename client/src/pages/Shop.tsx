@@ -3,7 +3,7 @@ import { products } from "@/data/products";
 import ProductCard from "@/components/ui/ProductCard";
 import { Layout } from "@/components/layout/Layout";
 import { ArrowUpDown, Filter, Grid3X3, List } from "lucide-react";
-import Button from "@/components/ui/Button";
+import {Button} from "@/components/ui/Button";
 
 const Shop: React.FC = () => {
   const [view, setView] = useState<"grid" | "list">("grid");

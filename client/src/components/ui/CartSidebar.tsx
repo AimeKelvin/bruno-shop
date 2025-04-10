@@ -2,7 +2,7 @@
 import React from "react";
 import { useCart } from "@/hooks/useCart";
 import { X, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
-import Button from "./Button";
+import {Button} from "./Button";
 
 const CartSidebar: React.FC = () => {
   const { 

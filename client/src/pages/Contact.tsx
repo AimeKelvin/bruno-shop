@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Layout } from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 
 const Contact: React.FC = () => {

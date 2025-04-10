@@ -4,7 +4,7 @@ import { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import { ShoppingBag, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Button from "./Button";
+import {Button} from "./Button";
 
 interface ProductCardProps {
   product: Product;
