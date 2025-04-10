@@ -9,16 +9,18 @@ import { Minus, Plus, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchSingleProduct, fetchProducts } from '@/services/productService';
 import { Product as ProductTypes } from '@/utils/types';
+import { useCart } from '@/contexts/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const productId: number = parseInt(id || '67f615ed5a4edef3aa31c5b9');
   const [allProducts, setAllProducts] = useState<ProductTypes[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const { addToCart } = useCart()
 
   const [productDetails, setProductDetails] = useState<ProductTypes | undefined>(undefined)
   
-  const product = allProducts.find(p => p._id === productId);
+  // const product = allProducts.find(p => p._id === productId);
   // const details = productDetails[productId as keyof typeof productDetails];
   
   const [quantity, setQuantity] = useState(1);
@@ -33,7 +35,7 @@ const ProductDetail = () => {
   
   // Get related products (excluding current product)
   const relatedProducts = allProducts
-    .filter(p => p._id !== productId && p.category === product?.category)
+    .filter(p => p._id !== productId && p.category === productDetails?.category)
     .slice(0, 3);
   
   const decreaseQuantity = () => {
@@ -46,11 +48,12 @@ const ProductDetail = () => {
     setQuantity(quantity + 1);
   };
   
-  const addToCart = () => {
-    toast.success(`${product?.name} added to cart`, {
-      description: `${quantity} × ${selectedColor}`
-    });
-  };
+  // const addToCart = () => {
+
+  //   toast.success(`${productDetails?.name} added to cart`, {
+  //     description: `${quantity} × ${selectedColor}`
+  //   });
+  // };
 
   const handleFetchCurrentSingleProduct = async (id: string) => {
     setLoading(true)
@@ -84,7 +87,7 @@ const ProductDetail = () => {
     handleFetchProducts()
   }, [])
   
-  if (!product) {
+  if (!productDetails) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -114,7 +117,7 @@ const ProductDetail = () => {
               <span className="mx-2 text-charcoal-light">/</span>
               <Link to="/shop" className="text-charcoal-light hover:text-charcoal transition-colors">Shop</Link>
               <span className="mx-2 text-charcoal-light">/</span>
-              <span className="text-charcoal">{product.name}</span>
+              <span className="text-charcoal">{productDetails.name}</span>
             </nav>
           </div>
           
@@ -124,38 +127,38 @@ const ProductDetail = () => {
             <div>
               {/* Main Image */}
               <div className="mb-4 aspect-[4/5] bg-muted">
-                {/* <img 
-                  src={mainImage}
-                  alt={product.name}
+                <img 
+                  src={productDetails.image}
+                  alt={productDetails.name}
                   className="w-full h-full object-cover"
-                /> */}
+                />
               </div>
               
               {/* Thumbnail Images */}
-              <div className="grid grid-cols-4 gap-2">
-                {/* {details.image.map((image, index) => (
+              {/* <div className="grid grid-cols-4 gap-2">
+                {productDetails.image.map((image, index) => (
                   <button 
                     key={index}
-                    className={`aspect-square ${mainImage === image ? 'ring-2 ring-charcoal' : 'border border-border'}`}
+                    className={`aspect-square ${productDetails.image === image ? 'ring-2 ring-charcoal' : 'border border-border'}`}
                     onClick={() => setMainImage(image)}
                   >
                     <img 
                       src={image}
-                      alt={`${product.name} - view ${index + 1}`}
+                      alt={`${productDetails.name} - view ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>
-                ))} */}
-              </div>
+                ))}
+              </div> */}
             </div>
             
             {/* Product Info */}
             <div>
-              <h1 className="font-serif text-2xl md:text-3xl mb-2">{product.name}</h1>
-              <p className="text-xl font-medium mb-4">${product.price.toFixed(2)}</p>
+              <h1 className="font-serif text-2xl md:text-3xl mb-2">{productDetails.name}</h1>
+              <p className="text-xl font-medium mb-4">${productDetails.price.toFixed(2)}</p>
               
               <div className="mb-6">
-                {/* <p className="text-charcoal-light">{details.description}</p> */}
+                <p className="text-charcoal-light">{productDetails.description}</p>
               </div>
               
               {/* Color Selection */}
@@ -211,7 +214,7 @@ const ProductDetail = () => {
               {/* Add to Cart */}
               <div className="mb-8">
                 <button 
-                  onClick={addToCart}
+                  onClick={() => addToCart(id, quantity)}
                   className="btn-primary w-full md:w-auto"
                 >
                   Add to Cart
@@ -219,17 +222,17 @@ const ProductDetail = () => {
               </div>
               
               {/* Features */}
-              <div className="border-t border-border pt-6">
+              {/* <div className="border-t border-border pt-6">
                 <h3 className="font-medium mb-3">Features</h3>
                 <ul className="space-y-2">
-                  {/* {details.features.map((feature, index) => (
+                  {details.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-charcoal-light mr-2">•</span>
                       <span className="text-charcoal-light">{feature}</span>
                     </li>
-                  ))} */}
+                  ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
           
