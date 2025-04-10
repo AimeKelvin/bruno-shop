@@ -7,90 +7,16 @@ import ProductFilter from '../components/shop/ProductFilter';
 import { Product } from '../components/ui/ProductCard';
 import { Filter, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
+import { fetchProducts } from '@/services/productService';
+import { Product as ProductTypes } from '@/utils/types';
 
-// Mock product data
-const allProducts: Product[] = [
-  {
-    id: 1,
-    name: "Minimalist Ceramic Vase",
-    price: 89.99,
-    category: "Home Decor",
-    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1593592023995-a802eccadb0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 2,
-    name: "Handcrafted Ceramic Mug",
-    price: 29.99,
-    category: "Kitchenware",
-    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1577918373433-60c424a35820?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 3,
-    name: "Modern Wall Clock",
-    price: 149.99,
-    category: "Home Decor",
-    image: "https://images.unsplash.com/photo-1594213114663-d94db9b17125?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1596485206311-2a26a6e638ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 4,
-    name: "Linen Throw Pillow",
-    price: 49.99,
-    category: "Textiles",
-    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 5,
-    name: "Wooden Serving Bowl",
-    price: 59.99,
-    category: "Kitchenware",
-    image: "https://images.unsplash.com/photo-1601001815894-4bb6c81416d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1525974160448-038dacadcc71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 6,
-    name: "Minimalist Table Lamp",
-    price: 119.99,
-    category: "Lighting",
-    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 7,
-    name: "Natural Cotton Throw",
-    price: 79.99,
-    category: "Textiles",
-    image: "https://images.unsplash.com/photo-1566375721046-97c6e9e8ad25?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 8,
-    name: "Concrete Planter",
-    price: 39.99,
-    category: "Home Decor",
-    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1591873109860-69aea4be9497?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 9,
-    name: "Marble Coasters Set",
-    price: 34.99,
-    category: "Kitchenware",
-    image: "https://images.unsplash.com/photo-1616484585957-f673dba8e0d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    imageHover: "https://images.unsplash.com/photo-1563844051929-b01c2667b0ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-  }
-];
-
-// Get unique categories
-const categories = ['All', ...new Set(allProducts.map(p => p.category))];
-
-// Get max price
-const maxPrice = Math.max(...allProducts.map(p => p.price));
 
 const Shop = () => {
+  const [allProducts, setAllProducts] = useState<ProductTypes[]>([])
+  const categories = ['All', ...new Set(allProducts.map(p => p.category))];
+  // const maxPrice = Math.max(...allProducts.map(p => p.price));
+  const maxPrice = 999;
+
   const isMobile = useIsMobile();
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -98,7 +24,26 @@ const Shop = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const handleFetchProducts = async () => {
+    setLoading(true)
+    try {
+      const products = await fetchProducts()
+      setAllProducts(products)
+      setLoading(false)
+    } catch(error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    handleFetchProducts()
+  }, [])
   
+
+
   // Update active filters when filters change
   useEffect(() => {
     const newActiveFilters: string[] = [];

@@ -45,12 +45,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (product: Product, quantity: number = 1) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
+      const existingItem = prevItems.find(item => item.id === product._id);
       
       if (existingItem) {
         // Item already exists in cart, update quantity
         const updatedItems = prevItems.map(item => 
-          item.id === product.id 
+          item.id === product._id 
             ? { ...item, quantity: item.quantity + quantity } 
             : item
         );
@@ -68,7 +68,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           duration: 2000,
         });
         return [...prevItems, { 
-          id: product.id, 
+          id: product._id, 
           name: product.name, 
           price: product.price, 
           quantity, 

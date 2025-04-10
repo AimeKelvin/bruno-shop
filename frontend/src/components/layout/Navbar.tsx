@@ -1,12 +1,20 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Search } from 'lucide-react';
 import CartWidget from '../shop/CartWidget';
+import { useCart } from '@/contexts/CartContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { getTotalItems, clearCart, addToCart, removeFromCart } = useCart()
+  const [totalCartItems, setTotalCartItems] = useState(0)
+
+  useEffect(() => {
+    const totalItems = getTotalItems()
+    setTotalCartItems(totalItems)
+  }, [addToCart, clearCart, removeFromCart])
 
   return (
     <header className="py-4 border-b border-border bg-background z-50 sticky top-0">
@@ -48,7 +56,7 @@ const Navbar = () => {
             >
               <ShoppingBag size={20} />
               <span className="absolute -top-2 -right-2 bg-charcoal text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                2
+                {totalCartItems}
               </span>
             </button>
           </div>

@@ -63,7 +63,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   return (
     <div className={gridClass}>
       {filteredProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product._id} product={product} />
       ))}
     </div>
   );

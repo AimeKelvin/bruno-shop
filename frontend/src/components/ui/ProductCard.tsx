@@ -5,12 +5,14 @@ import { ShoppingBag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 
 export interface Product {
-  id: number;
+  _id: number;
   name: string;
   price: number;
   category: string;
+  description: string;
   image: string;
-  imageHover?: string;
+  brand: string;
+  countInStock: number;
 }
 
 interface ProductCardProps {
@@ -27,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
   return (
     <div className="group hover-trigger">
-      <Link to={`/product/${product.id}`} className="block">
+      <Link to={`/product/${product._id}`} className="block">
         <div className="relative overflow-hidden">
           {/* Main Image */}
           <img 
@@ -38,9 +40,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           />
           
           {/* Hover Image */}
-          {product.imageHover && (
+          {product.image && (
             <img 
-              src={product.imageHover}
+              src={product.image}
               alt={`${product.name} - alternative view`}
               className="w-full h-auto object-cover absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               style={{ aspectRatio: '3/4' }}
